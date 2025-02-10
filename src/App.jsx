@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import './App.css';
 
 const SYMBOLS = ['🎭', '🎨', '🎪', '🎢', '🎡', '🎮', '🎲', '🎯', 
                 '🎱', '🎳', '🎸', '🎺', '🎻', '🎹', '🎷', '🎼'];
@@ -6,21 +7,14 @@ const SYMBOLS = ['🎭', '🎨', '🎪', '🎢', '🎡', '🎮', '🎲', '🎯',
 const Card = ({ value, isFlipped, isMatched, onClick }) => (
   <div 
     onClick={onClick}
-    className={`aspect-[3/4] bg-green-900 border-2 border-yellow-400 rounded-lg cursor-pointer 
-                transition-all duration-300 relative preserve-3d 
-                ${isFlipped ? 'rotate-y-180' : ''} 
-                ${isMatched ? 'opacity-50' : ''}`}
+    className={`card ${isFlipped ? 'flipped' : ''} ${isMatched ? 'matched' : ''}`}
   >
-    <div className="absolute w-full h-full backface-hidden flex items-center justify-center text-2xl text-yellow-400 bg-gradient-to-br from-green-800 to-green-900">
-      ?
-    </div>
-    <div className="absolute w-full h-full backface-hidden flex items-center justify-center text-2xl text-yellow-400 bg-green-900 rotate-y-180">
-      {value}
-    </div>
+    <div className="card-front">?</div>
+    <div className="card-back">{value}</div>
   </div>
 );
 
-const SichuanGame = () => {
+function App() {
   const [cards, setCards] = useState([]);
   const [score, setScore] = useState(0);
   const [gameTime, setGameTime] = useState(0);
@@ -111,16 +105,16 @@ const SichuanGame = () => {
   }, [isGameOver]);
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-green-900 min-h-screen">
-      <h1 className="text-4xl text-yellow-400 text-center mb-8 font-bold shadow-text">四川翻牌机</h1>
+    <div className="game-container">
+      <h1 className="game-title">四川翻牌机</h1>
       
-      <div className="flex justify-between mb-6 p-4 bg-black/30 rounded-lg text-white">
+      <div className="game-stats">
         <div>分数: {score}</div>
         <div>剩余配对: {remainingPairs}</div>
         <div>时间: {formatTime(gameTime)}</div>
       </div>
 
-      <div className="grid grid-cols-8 gap-2 p-4 bg-black/20 rounded-lg mb-6">
+      <div className="game-board">
         {cards.map((card, index) => (
           <Card
             key={index}
@@ -132,23 +126,17 @@ const SichuanGame = () => {
         ))}
       </div>
 
-      <button
-        onClick={restartGame}
-        className="bg-yellow-400 text-green-900 px-6 py-2 rounded-lg font-bold hover:bg-yellow-300 transition-colors"
-      >
+      <button className="restart-button" onClick={restartGame}>
         重新开始
       </button>
 
       {isGameOver && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-green-800 p-6 rounded-lg text-white">
-            <h2 className="text-2xl mb-4">游戏结束！</h2>
+        <div className="game-over-modal">
+          <div className="modal-content">
+            <h2>游戏结束！</h2>
             <p>最终得分: {score}</p>
             <p>用时: {formatTime(gameTime)}</p>
-            <button
-              onClick={restartGame}
-              className="mt-4 bg-yellow-400 text-green-900 px-6 py-2 rounded-lg font-bold hover:bg-yellow-300"
-            >
+            <button onClick={restartGame}>
               再来一局
             </button>
           </div>
@@ -156,6 +144,6 @@ const SichuanGame = () => {
       )}
     </div>
   );
-};
+}
 
-export default SichuanGame;
+export default App;
